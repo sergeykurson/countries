@@ -98,9 +98,6 @@ const useCountries = (countriesStale: Array<CountryInfo>, sorting: string, searc
       case "desc":
         filteredCountries.sort((a, b) => b.name.common.localeCompare(a.name.common));
         break;
-      default:
-        filteredCountries;
-        break;
     }
 
     return filteredCountries;

@@ -2,7 +2,7 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Layout from "../components/layout";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function FunWithCountries({ Component, pageProps }: AppProps) {
   return (
     <Layout>
       <Component {...pageProps} />
@@ -10,4 +10,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default FunWithCountries;

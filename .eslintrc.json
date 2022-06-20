@@ -1,5 +1,9 @@
 {
-  "extends": "next/core-web-vitals",
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:jest/all"
+  ],
+  "plugins": ["jest"],
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["error", "double"],

@@ -15,7 +15,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ countr
   const [countriesProcessed, countriesAll] = useCountries(countriesStale, sorting, search);
   const countriesToShow = countriesProcessed.slice(0, 18 * pages);
 
-  if (typeof countryQueryParam === "string") {
+  if (typeof countryQueryParam === "string" && countryQueryParam.length > 0) {
     return (
       <>
         <Link href="/">

@@ -114,6 +114,7 @@ export const CountryDetailsFetch = ({ countryName, countries }: { countryName: s
   const [country, setCountry] = useState<CountryInfoAdvanced>();
   const [bordering, setBordering] = useState<Array<CountryInfo>>([]);
   const [error, setError] = useState<string>();
+
   useEffect(() => {
     fetch(`${COUNTRY_INFO_HOST}/name/${countryName}?fullText=true&${COUNTRY_INFO_ADVANCED_FIELDS}`)
       .then(async (res) => {

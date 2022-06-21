@@ -46,7 +46,7 @@ export interface CountryInfoAdvanced extends CountryInfo {
 const CountryCommon = ({ country }: { country: CountryInfo }) => {
   return (
     <>
-      <p className="text-lg font-bold">{country.name.common}</p>
+      <p data-testid="country-name" className="text-lg font-bold">{country.name.common}</p>
       {country.name.official !== country.name.common && <p className="italic">{country.name.official}</p>}
       <p>Capital: {country.capital.length > 0 ? country.capital[0] : "-"}</p>
       <p>Population: {Intl.NumberFormat().format(country.population)}</p>
@@ -73,9 +73,9 @@ export const CountryItem = ({ country }: { country: CountryInfo }) => {
 
 export const CountriesGrid = ({ countries }: { countries?: Array<CountryInfo> }) => {
   return (
-    <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+    <div data-testid="countries-grid" className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
       {countries && countries.map((country) => (
-        <CountryItem key={country.name.common} country={country} />
+        <CountryItem key={country.cca3} country={country} />
       ))}
     </div>
   );

@@ -3,11 +3,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const COUNTRY_INFO_HOST = "https://restcountries.com/v3.1";
-const COUNTRY_INFO_FIELDS = "fields=cca3,name,capital,population,flags";
-const COUNTRY_INFO_ADVANCED_FIELDS = COUNTRY_INFO_FIELDS + ",currencies,languages,borders,region,subregion";
+const COUNTRY_INFO_BASIC_FIELDS = "fields=cca3,name,capital,population,flags";
+const COUNTRY_INFO_ADVANCED_FIELDS = COUNTRY_INFO_BASIC_FIELDS + ",currencies,languages,borders,region,subregion";
 
-export const getAllCountries = async (): Promise<Array<CountryInfo>> => {
-  const response = await fetch(`${COUNTRY_INFO_HOST}/all?${COUNTRY_INFO_FIELDS}`);
+export const getAllCountries = async (): Promise<Array<CountryInfoBasic>> => {
+  const response = await fetch(`${COUNTRY_INFO_HOST}/all?${COUNTRY_INFO_BASIC_FIELDS}`);
   if (response.ok) {
     return await response.json();
   }
@@ -15,7 +15,7 @@ export const getAllCountries = async (): Promise<Array<CountryInfo>> => {
   throw new Error();
 };
 
-export interface CountryInfo {
+export interface CountryInfoBasic {
   cca3: string;
   name: {
     common: string;
@@ -28,7 +28,7 @@ export interface CountryInfo {
   };
 }
 
-export interface CountryInfoAdvanced extends CountryInfo {
+export interface CountryInfoAdvanced extends CountryInfoBasic {
   currencies: {
     [key in string]: {
       name: string;
@@ -43,7 +43,7 @@ export interface CountryInfoAdvanced extends CountryInfo {
   subregion: string;
 }
 
-const CountryCommon = ({ country }: { country: CountryInfo }) => {
+const CountryInfoCommon = ({ country }: { country: CountryInfoBasic }) => {
   return (
     <>
       <p data-testid="country-name" className="text-lg font-bold">{country.name.common}</p>
@@ -54,7 +54,7 @@ const CountryCommon = ({ country }: { country: CountryInfo }) => {
   );
 };
 
-export const CountryItem = ({ country }: { country: CountryInfo }) => {
+export const CountryOverview = ({ country }: { country: CountryInfoBasic }) => {
   return (
     <Link href={`/?country=${encodeURIComponent(country.name.common.toLowerCase())}`}>
       <a className="block shadow-md rounded-md bg-purple-100 hover:ring hover:ring-purple-200 focus:outline-none focus:ring focus:ring-purple-300">
@@ -62,8 +62,8 @@ export const CountryItem = ({ country }: { country: CountryInfo }) => {
           <div className="relative w-32 h-32">
             <Image src={country.flags.svg} alt={country.name.common} layout="fill" objectFit="contain" />
           </div>
-          <div className="relative flex flex-col flex-1 justify-center ml-2">
-            <CountryCommon country={country} />
+          <div data-testid="country-info" className="relative flex flex-col flex-1 justify-center ml-2">
+            <CountryInfoCommon country={country} />
           </div>
         </div>
       </a>
@@ -71,59 +71,31 @@ export const CountryItem = ({ country }: { country: CountryInfo }) => {
   );
 };
 
-export const CountriesGrid = ({ countries }: { countries?: Array<CountryInfo> }) => {
+export const CountriesGrid = ({ countries }: { countries?: Array<CountryInfoBasic> }) => {
   return (
     <div data-testid="countries-grid" className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
       {countries && countries.map((country) => (
-        <CountryItem key={country.cca3} country={country} />
+        <CountryOverview key={country.cca3} country={country} />
       ))}
     </div>
   );
 };
 
-export const CountryDetails = ({ country, bordering }: { country: CountryInfoAdvanced; bordering: Array<CountryInfo> }) => {
-  const currencies = Object.entries(country.currencies);
-  const languages = Object.values(country.languages);
-
-  return (
-    <div className="flex flex-col space-y-4">
-      <div className="relative flex flex-col lg:flex-row items-center p-2 space-y-2 overflow-hidden shadow-md rounded-md bg-purple-100">
-        <div className="relative w-full lg:w-96 h-64">
-          <Image src={country.flags.svg} alt={country.name.common} layout="fill" objectFit="contain" />
-        </div>
-        <div className="relative w-full flex flex-col flex-1 ml-2">
-          <CountryCommon country={country} />
-          <p>{currencies.length > 1 ? "Currencies" : "Currency"}: {currencies.length > 0 ? currencies.map(([code, { name, symbol }]) => `${code} (${name}, ${symbol})`).join(", ") : "-"}</p>
-          <p>{languages.length > 1 ? "Languages" : "Language"}: {languages.length > 0 ? languages.join(", ") : "-"}</p>
-          <p>Region: {country.region.length > 0 ? country.region : "-"}</p>
-          <p>Subregion: {country.subregion.length > 0 ? country.subregion : "-"}</p>
-          {bordering.length <= 0 && <p>Bordering countries: -</p>}
-        </div>
-      </div>
-      {bordering.length > 0 && (
-        <>
-          <p className="w-full text-center font-bold text-xl">Bordering countries:</p>
-          <CountriesGrid countries={bordering} />
-        </>
-      )}
-    </div>
-  );
-};
-
-export const CountryDetailsFetch = ({ countryName, countries }: { countryName: string; countries: Array<CountryInfo> }) => {
+export const CountryDetails = ({ countryName, countries }: { countryName: string; countries: Array<CountryInfoBasic> }) => {
   const [country, setCountry] = useState<CountryInfoAdvanced>();
-  const [bordering, setBordering] = useState<Array<CountryInfo>>([]);
+  const [bordering, setBordering] = useState<Array<CountryInfoBasic>>([]);
   const [error, setError] = useState<string>();
 
   useEffect(() => {
     fetch(`${COUNTRY_INFO_HOST}/name/${countryName}?fullText=true&${COUNTRY_INFO_ADVANCED_FIELDS}`)
       .then(async (res) => {
         if (res.ok) {
-          const json = await res.json();
-          const countryDetails: CountryInfoAdvanced = json[0];
-          setBordering(countries.reduce((bordering: Array<CountryInfo>, country: CountryInfo) => {
-            if (countryDetails.borders.includes(country.cca3)) {
-              bordering.push(country);
+          const countryDetailsArray = await res.json();
+          const countryDetails: CountryInfoAdvanced = countryDetailsArray[0];
+          setBordering(countries.reduce((bordering: Array<CountryInfoBasic>, country: CountryInfoBasic) => {
+            const index = countryDetails.borders.indexOf(country.cca3);
+            if (index >= 0) {
+              bordering[index] = country;
             }
 
             return bordering;
@@ -149,5 +121,30 @@ export const CountryDetailsFetch = ({ countryName, countries }: { countryName: s
     );
   }
 
-  return <CountryDetails country={country} bordering={bordering} />;
+  const currencies = Object.entries(country.currencies);
+  const languages = Object.values(country.languages);
+
+  return (
+    <div className="flex flex-col space-y-4">
+      <div className="relative flex flex-col lg:flex-row items-center p-2 space-y-2 overflow-hidden shadow-md rounded-md bg-purple-100">
+        <div className="relative w-full lg:w-96 h-64">
+          <Image src={country.flags.svg} alt={country.name.common} layout="fill" objectFit="contain" />
+        </div>
+        <div data-testid="country-details" className="relative w-full flex flex-col flex-1 ml-2">
+          <CountryInfoCommon country={country} />
+          <p>{currencies.length > 1 ? "Currencies" : "Currency"}: {currencies.length > 0 ? currencies.map(([code, { name, symbol }]) => `${code} (${name}, ${symbol})`).join(", ") : "-"}</p>
+          <p>{languages.length > 1 ? "Languages" : "Language"}: {languages.length > 0 ? languages.join(", ") : "-"}</p>
+          <p>Region: {country.region.length > 0 ? country.region : "-"}</p>
+          <p>Subregion: {country.subregion.length > 0 ? country.subregion : "-"}</p>
+          {bordering.length <= 0 && <p>Bordering countries: -</p>}
+        </div>
+      </div>
+      {bordering.length > 0 && (
+        <>
+          <p className="w-full text-center font-bold text-xl">Bordering countries:</p>
+          <CountriesGrid countries={bordering} />
+        </>
+      )}
+    </div>
+  );
 };

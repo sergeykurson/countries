@@ -1,6 +1,6 @@
-import type { CountryInfo } from "../components/country";
+import type { CountryInfoBasic, CountryInfoAdvanced } from "../components/country";
 
-export const countriesInfo: Array<CountryInfo> = [
+export const countriesInfo: Array<CountryInfoBasic> = [
   {
     "flags": {
       "svg": "https://flagcdn.com/ie.svg",
@@ -84,5 +84,79 @@ export const countriesInfo: Array<CountryInfo> = [
       "Oslo",
     ],
     "population": 5379475,
+  },
+  {
+    "flags": {
+      "svg": "https://flagcdn.com/de.svg",
+    },
+    "name": {
+      "common": "Germany",
+      "official": "Federal Republic of Germany",
+    },
+    "cca3": "DEU",
+    "capital": [
+      "Berlin",
+    ],
+    "population": 83240525,
+  },
+  {
+    "flags": {
+      "svg": "https://flagcdn.com/ma.svg",
+    },
+    "name": {
+      "common": "Morocco",
+      "official": "Kingdom of Morocco",
+    },
+    "cca3": "MAR",
+    "capital": [
+      "Rabat",
+    ],
+    "population": 36910558,
+  },
+  {
+    "flags": {
+      "svg": "https://flagcdn.com/be.svg",
+    },
+    "name": {
+      "common": "Belgium",
+      "official": "Kingdom of Belgium",
+    },
+    "cca3": "BEL",
+    "capital": [
+      "Brussels",
+    ],
+    "population": 11555997,
+  },
+];
+
+export const countryDetails: Array<CountryInfoAdvanced> = [
+  {
+    "flags": {
+      "svg": "https://flagcdn.com/nl.svg",
+    },
+    "name": {
+      "common": "Netherlands",
+      "official": "Kingdom of the Netherlands",
+    },
+    "cca3": "NLD",
+    "currencies": {
+      "EUR": {
+        "name": "Euro",
+        "symbol": "€",
+      },
+    },
+    "capital": [
+      "Amsterdam",
+    ],
+    "region": "Europe",
+    "subregion": "Western Europe",
+    "languages": {
+      "nld": "Dutch",
+    },
+    "borders": [
+      "BEL",
+      "DEU",
+    ],
+    "population": 16655799,
   },
 ];

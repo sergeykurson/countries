@@ -45,7 +45,7 @@ describe("home", () => {
     expect(sortingNone).toBeChecked();
 
     const countries = screen.getAllByTestId("country-name");
-    expect(countries).toHaveLength(6);
+    expect(countries).toHaveLength(9);
     expect(countries[0].textContent).toBe("Ireland");
   });
 
@@ -66,8 +66,8 @@ describe("home", () => {
     expect(sortingAsc).toBeChecked();
 
     const countries = screen.getAllByTestId("country-name");
-    expect(countries).toHaveLength(6);
-    expect(countries[0].textContent).toBe("Denmark");
+    expect(countries).toHaveLength(9);
+    expect(countries[0].textContent).toBe("Belgium");
   });
 
   it("sorts countries in descending order", async () => {
@@ -87,7 +87,7 @@ describe("home", () => {
     expect(sortingDesc).toBeChecked();
 
     const countries = screen.getAllByTestId("country-name");
-    expect(countries).toHaveLength(6);
+    expect(countries).toHaveLength(9);
     expect(countries[0].textContent).toBe("Ukraine");
   });
 
@@ -119,7 +119,7 @@ describe("home", () => {
     expect(countriesGrid).toBeInTheDocument();
 
     expect(searchInput).toHaveValue("");
-    expect(countriesGrid.children).toHaveLength(6);
+    expect(countriesGrid.children).toHaveLength(9);
 
     fireEvent.change(searchInput, { target: { value: countryName } });
 

@@ -1,7 +1,7 @@
 import type { InferGetStaticPropsType, NextPage } from "next";
-import type { CountryInfo } from "../components/country";
+import type { CountryInfoBasic } from "../components/country";
 
-import { CountriesGrid, CountryDetailsFetch, getAllCountries } from "../components/country";
+import { CountriesGrid, CountryDetails, getAllCountries } from "../components/country";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -23,7 +23,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ countr
             ← Back
           </a>
         </Link>
-        <CountryDetailsFetch key={countryQueryParam} countryName={countryQueryParam} countries={countriesAll} />
+        <CountryDetails key={countryQueryParam} countryName={countryQueryParam} countries={countriesAll} />
       </>
     );
   }
@@ -76,7 +76,7 @@ const Home: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({ countr
   );
 };
 
-const useCountries = (countriesStale: Array<CountryInfo>, sorting: string, search: string) => {
+const useCountries = (countriesStale: Array<CountryInfoBasic>, sorting: string, search: string) => {
   const [countries, setCountries] = useState(countriesStale);
 
   useEffect(() => {
@@ -107,7 +107,7 @@ const useCountries = (countriesStale: Array<CountryInfo>, sorting: string, searc
 };
 
 export const getStaticProps = async () => {
-  const countriesStale: Array<CountryInfo> = await getAllCountries().catch(() => []);
+  const countriesStale: Array<CountryInfoBasic> = await getAllCountries().catch(() => []);
 
   return {
     props: {
